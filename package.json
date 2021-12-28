@@ -1,0 +1,47 @@
+{
+  "name": "ballotblock-backend",
+  "version": "1.0.0",
+  "description": "Main backend API app for FYP - BallotBlock",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "voting",
+    "blockchain",
+    "ethereum",
+    "ballot",
+    "node",
+    "express",
+    "react",
+    "postgres",
+    "android",
+    "sequelize",
+    "jwt",
+    "secure"
+  ],
+  "author": {
+    "name": "Abdul Hai",
+    "username": "abdulhyie",
+    "email": "abdulhyyie@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "Abdullah Ashraf",
+      "email": "abdaman7x@gmail.com"
+    },
+    {
+      "name": "Awais Shams",
+      "email": "awais.2120@gmail.com"
+    }
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^7.0.0-alpha.3"
+  }
+}
