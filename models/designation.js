@@ -11,9 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.Organizer);
     }
     toJSON() {
-      return { ...this.get(), id: undefined }
+      return { ...this.get(), id: undefined, OrganizerId: undefined, password: undefined }
     }
   };
   Designation.init({

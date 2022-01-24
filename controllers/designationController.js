@@ -1,10 +1,12 @@
 
 // import models
-const {Designation} = require('../models');
+const {Designation, Organizer} = require('../models');
 
 exports.index = async (req, res) => {
     try {
-        const designations = await Designation.findAll();
+        const designations = await Designation.findAll({
+            include: Organizer
+        });
         return res.json(designations);
     } catch (err) {
         return res.status(400).send({msg: "failed", error: err});
@@ -63,12 +65,22 @@ exports.edit = async (req, res) => {
 }
 
 exports.create = async (req, res) => {
-    const {name, officeLocation} = req.body;
-    console.log({name, officeLocation});
+    const {name, officeLocation, organizerId} = req.body;
     try {
-        const designation = await Designation.create({name, officeLocation});
-        return res.json(designation);
-    } catch(err) {
-        res.status(400).send({msg: "failed", error: err});
+        const {count, rows: organizer} = await Organizer.findAndCountAll({
+            where: {uuid: organizerId}
+        });
+        if (count < 1) {
+            throw {msg: "Invalid admin"};
+        }
+        const OrganizerId = organizer[0].id;
+        try {
+            const designation = await Designation.create({name, officeLocation, OrganizerId});
+            return res.json(designation);
+        } catch(err) {
+            res.status(400).send({msg: "failed", error: err});
+        }
+    } catch (err) {
+        return res.status(400).send({msg: "failed", error: err});
     }
 }

@@ -4,11 +4,13 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 // import models
-const {Candidate} = require('../models');
+const {Candidate, Organizer} = require('../models');
 
 exports.index = async (req, res) => {
     try {
-        const candidates = await Candidate.findAll();
+        const candidates = await Candidate.findAll({
+            include: Organizer
+        });
         return res.json(candidates);
     } catch (err) {
         return res.status(400).send({msg: "failed", error: err});
@@ -66,14 +68,26 @@ exports.edit = async (req, res) => {
     }
 }
 
-exports.create = (req, res) => {
-    const {firstname, lastname, email, password, cnic, dob, permanentAddress} = req.body;
+exports.create = async (req, res) => {
+    const {firstname, lastname, email, password, cnic, dob, permanentAddress, organizerId} = req.body;
     try {
-        bcrypt.hash(password, saltRounds, async (err, password) => {
-            const candidate = await Candidate.create({firstname, lastname, email, password, cnic, dob, permanentAddress});
-            return res.json(candidate);
+        const {count, rows: organizer} = await Organizer.findAndCountAll({
+            where: {uuid: organizerId}
         });
-    } catch(err) {
-        res.status(400).send({msg: "failed", error: err});
+        if (count < 1) {
+            throw {msg: "Invalid organizer"};
+        }
+        console.log(organizer[0].id);
+        const OrganizerId = organizer[0].id;
+        try {
+            bcrypt.hash(password, saltRounds, async (err, password) => {
+                const candidate = await Candidate.create({firstname, lastname, email, password, cnic, dob, permanentAddress, OrganizerId});
+                return res.json(candidate);
+            });
+        } catch(err) {
+            res.status(400).send({msg: "failed", error: err});
+        }
+    } catch (err) {
+        return res.status(400).send({msg: "failed", error: err});
     }
 }

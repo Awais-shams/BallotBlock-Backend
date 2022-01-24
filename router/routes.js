@@ -36,7 +36,7 @@ router.patch('/candidate/edit', candidateController.edit);
 router.get('/candidate/:uuid', candidateController.show);
 router.delete('/candidate/:uuid', candidateController.delete);
 
-// routes - CANDIDATE
+// routes - VOTER
 router.get('/voter/', voterController.index);
 router.post('/voter/create', voterController.create);
 router.patch('/voter/edit', voterController.edit);

@@ -4,11 +4,13 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 // import models
-const {Organizer} = require('../models');
+const {Organizer, Admin} = require('../models');
 
 exports.index = async (req, res) => {
     try {
-        const organizers = await Organizer.findAll();
+        const organizers = await Organizer.findAll({
+            include: Admin
+        });
         return res.json(organizers);
     } catch (err) {
         return res.status(400).send({msg: "failed", error: err});
@@ -22,7 +24,7 @@ exports.show = async (req, res) => {
             where: {uuid: uuid}
         });
         if (count < 1) {
-            throw {msg: "Admin not found"};
+            throw {msg: "Invalid admin"};
         }
         return res.json(organizer);
     } catch (err) {
@@ -66,14 +68,27 @@ exports.edit = async (req, res) => {
     }
 }
 
-exports.create = (req, res) => {
-    const {firstname, lastname, email, password, cnic, dob} = req.body;
+exports.create = async (req, res) => {
+    const {firstname, lastname, email, password, cnic, dob, adminId} = req.body;
     try {
-        bcrypt.hash(password, saltRounds, async (err, password) => {
-            const organizer = await Organizer.create({firstname, lastname, email, password, cnic, dob});
-            return res.json(organizer);
+        const {count, rows: admin} = await Admin.findAndCountAll({
+            where: {uuid: adminId}
         });
-    } catch(err) {
-        res.status(400).send({msg: "failed", error: err});
+        if (count < 1) {
+            throw {msg: "Invalid Admin"};
+        }
+        console.log("as well")
+        console.log(admin[0].id)
+        const AdminId = admin[0].id;
+        try {
+            bcrypt.hash(password, saltRounds, async (err, password) => {
+                const organizer = await Organizer.create({firstname, lastname, email, password, cnic, dob, AdminId});
+                return res.json(organizer);
+            });
+        } catch(err) {
+            res.status(400).send({msg: "failed", error: err});
+        }
+    } catch (err) {
+        return res.status(400).send({msg: "failed", error: err});
     }
 }
