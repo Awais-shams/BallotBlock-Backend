@@ -24,7 +24,7 @@ exports.show = async (req, res) => {
             where: {uuid: uuid}
         });
         if (count < 1) {
-            throw {msg: "Invalid admin"};
+            throw {msg: "Candidate not found"};
         }
         return res.json(organizer);
     } catch (err) {

@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 const router = require('./router/routes');
 
 // setting up the enviroment variables
@@ -21,6 +22,9 @@ app.use(function timeLog (req, res, next) {
 
 // configuring json parser
 app.use(express.json());
+
+// configuring cookie parser
+app.use(cookieParser());
 
 // configure routers
 app.use('/', router);
