@@ -4,7 +4,8 @@ const bcrypt = require('bcrypt');
 const {Admin, Organizer, Candidate, Voter} = require('../models');
 // import JWT for authentication
 const {generateToken} = require('../authentication/JWT');
-
+// Import roles
+const Role = require('../authentication/roles');
 
 
 exports.adminAuth = async (req, res) => {
@@ -24,7 +25,7 @@ exports.adminAuth = async (req, res) => {
             res.status(400).json({error: "Incorrect password"});
         } else {
             // generate JWT
-            const accessToken = generateToken(admin);
+            const accessToken = generateToken(admin, Role.Admin);
             // storing JWT in the cookie
             res.cookie(
                 "access-token", accessToken,
@@ -36,6 +37,7 @@ exports.adminAuth = async (req, res) => {
             );
             res.json({
                 message: "Signed in",
+                uuid: admin.uuid,
                 accessToken: accessToken
             });
         }
@@ -59,7 +61,7 @@ exports.oganizerAuth = async (req, res) => {
             res.status(400).json({error: "Incorrect password"});
         } else {
             // generate JWT
-            const accessToken = generateToken(organizer);
+            const accessToken = generateToken(organizer, Role.Organizer);
             // storing JWT in the cookie
             res.cookie(
                 "access-token", accessToken,
@@ -94,7 +96,7 @@ exports.candidateAuth = async (req, res) => {
             res.status(400).json({error: "Incorrect password"});
         } else {
             // generate JWT
-            const accessToken = generateToken(candidate);
+            const accessToken = generateToken(candidate, Role.Candidate);
             // storing JWT in the cookie
             res.cookie(
                 "access-token", accessToken,
@@ -129,7 +131,7 @@ exports.voterAuth = async (req, res) => {
             res.status(400).json({error: "Incorrect password"});
         } else {
             // generate JWT
-            const accessToken = generateToken(voter);
+            const accessToken = generateToken(voter, Role.Voter);
             // storing JWT in the cookie
             res.cookie(
                 "access-token", accessToken,
@@ -145,4 +147,10 @@ exports.voterAuth = async (req, res) => {
             });
         }
     });
+}
+
+exports.logout = async (req, res) => {
+    res.clearCookie('access-token');
+
+    res.status(200).json({msg: "Logged out"});
 }
