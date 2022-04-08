@@ -22,7 +22,7 @@ const authorize = (payloadRole, roles = [], req, res) => {
 
     if (roles.length && !roles.includes(payloadRole)) {
         // user's role is not authorized
-        return res.status(401).json({ message: 'User is unauthorized access this resource' });
+        return res.status(403).json({ message: 'User is unauthorized access this resource' });
     }
 
     req.authorized = true;
@@ -31,7 +31,7 @@ const authorize = (payloadRole, roles = [], req, res) => {
 
 const authenticate = (accessToken, req, res) => {
     if (!accessToken) {
-        return res.status(400).json({error: "User not authenticated"});
+        return res.status(401).json( {message: "User not authenticated"} );
     }
 
     try {
@@ -42,7 +42,7 @@ const authenticate = (accessToken, req, res) => {
             return userRole;
         }
     } catch (err) {
-        return res.status(400).json({error: "Invalid access token!"});
+        return res.status(400).json( {message: "Invalid access token!"} );
     }
 }
 

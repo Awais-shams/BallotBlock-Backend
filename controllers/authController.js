@@ -16,13 +16,13 @@ exports.adminAuth = async (req, res) => {
     });
     // check if admin exists
     if (!admin) {
-        return res.status(400).json({error: "Admin does not exist"});
+        return res.status(404).json({message: "No admin account exists with this email"});
     }
     // verify password
     const hashedPassword = admin.password;
     bcrypt.compare(password, hashedPassword).then((match) => {
         if (!match) {
-            res.status(400).json({error: "Incorrect password"});
+            res.status(400).json({message: "Incorrect password"});
         } else {
             // generate JWT
             const accessToken = generateToken(admin, Role.Admin);
@@ -52,13 +52,13 @@ exports.oganizerAuth = async (req, res) => {
     });
     // check if admin exists
     if (!organizer) {
-        return res.status(400).json({error: "Organizer does not exist"});
+        return res.status(404).json({message: "No organizer account exists with this email"});
     }
     // verify password
     const hashedPassword = organizer.password;
     bcrypt.compare(password, hashedPassword).then((match) => {
         if (!match) {
-            res.status(400).json({error: "Incorrect password"});
+            res.status(400).json({message: "Incorrect password"});
         } else {
             // generate JWT
             const accessToken = generateToken(organizer, Role.Organizer);
@@ -87,13 +87,13 @@ exports.candidateAuth = async (req, res) => {
     });
     // check if admin exists
     if (!candidate) {
-        return res.status(400).json({error: "Candidate does not exist"});
+        return res.status(404).json({message: "No candidate account exists with this email"});
     }
     // verify password
     const hashedPassword = candidate.password;
     bcrypt.compare(password, hashedPassword).then((match) => {
         if (!match) {
-            res.status(400).json({error: "Incorrect password"});
+            res.status(400).json({message: "Incorrect password"});
         } else {
             // generate JWT
             const accessToken = generateToken(candidate, Role.Candidate);
@@ -122,13 +122,13 @@ exports.voterAuth = async (req, res) => {
     });
     // check if admin exists
     if (!voter) {
-        return res.status(400).json({error: "Voter does not exist"});
+        return res.status(404).json({message: "No voter account exists with this email"});
     }
     // verify password
     const hashedPassword = voter.password;
     bcrypt.compare(password, hashedPassword).then((match) => {
         if (!match) {
-            res.status(400).json({error: "Incorrect password"});
+            res.status(400).json({message: "Incorrect password"});
         } else {
             // generate JWT
             const accessToken = generateToken(voter, Role.Voter);

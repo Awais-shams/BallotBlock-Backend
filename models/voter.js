@@ -39,7 +39,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         notEmpty: {
           msg: "Firstname can't be empty."
-        }
+        },
+        isAlpha: {msg: "Invalid first name."},
       }
     },
     lastname: {
@@ -51,7 +52,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         notEmpty: {
           msg: "Lastname can't be empty."
-        }
+        },
+        isAlpha: {msg: "Invalid last name."},
       }  
     },
     email: {
@@ -90,6 +92,14 @@ module.exports = (sequelize, DataTypes) => {
         },
         notEmpty: {
           msg: "CNIC can't be empty."
+        },
+        isNumeric: {
+          msg: "Invalid CNIC"
+        },
+        checkLength(value) {
+          if (value.length != 13) {
+            throw new Error("Invalid CNIC");
+          }
         }
       }
     },
@@ -102,6 +112,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         notEmpty: {
           msg: "Date of Birth can't be empty."
+        },
+        isBefore: {
+          args: [new Date().toString()],
+          msg: "Invalid Date"
         }
       }
     },

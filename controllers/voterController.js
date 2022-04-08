@@ -11,7 +11,7 @@ exports.index = async (req, res) => {
         const voter = await Voter.findAll();
         return res.json(voter);
     } catch (err) {
-        return res.status(400).send({msg: "failed", error: err});
+        return res.status(400).send({message: "something went wrong", error: err});
     }
 }
 
@@ -22,11 +22,11 @@ exports.show = async (req, res) => {
             where: {uuid: uuid}
         });
         if (count < 1) {
-            throw {msg: "Voter not found"};
+            return res.status(404).send({message: "Voter not found"});
         }
         return res.json(voter);
     } catch (err) {
-        return res.status(400).send({msg: "failed", error: err});
+        return res.status(400).send({message: "Something went wrong", error: err});
     }
 }
 
@@ -37,14 +37,14 @@ exports.delete = async (req, res) => {
             where: {uuid: uuid}
         });
         if (count < 1) {
-            throw {msg: "Voter not found"};
+            return res.status(404).send({message: "Voter not found"});
         }
         await Voter.destroy({
             where: {uuid: uuid}
         });
         return res.json({msg: "deleted"});
     } catch (err) {
-        return res.status(400).send({msg: "failed", error: err});
+        return res.status(400).send({message: "Something went wrong", error: err});
     }
 }
 
@@ -55,14 +55,14 @@ exports.edit = async (req, res) => {
             where: {uuid: uuid}
         });
         if (count < 1) {
-            throw {msg: "Voter not found"};
+            return res.status(404).send({message: "Voter not found"});
         }
         await Voter.update({firstname, lastname, email, password, cnic, dob, permanentAddress}, {
             where: {uuid: uuid}
         });
         return res.json({msg: "edited"});
     } catch (err) {
-        return res.status(400).send({msg: "failed", error: err});
+        return res.status(400).send({message: err.errors[0].message, error: err});
     }
 }
 
@@ -70,10 +70,19 @@ exports.create = (req, res) => {
     const {firstname, lastname, email, password, cnic, dob, permanentAddress} = req.body;
     try {
         bcrypt.hash(password, saltRounds, async (err, password) => {
-            const voter = await Voter.create({firstname, lastname, email, password, cnic, dob, permanentAddress});
-            return res.json(voter);
+            try {
+                const voter = await Voter.create({firstname, lastname, email, password, cnic, dob, permanentAddress});
+                return res.json(voter);
+            } catch(err) {
+                if (err instanceof Sequelize.UniqueConstraintError) {
+                    return res.status(400).send({message: "Email already exists"});
+                }
+                else { 
+                    return res.status(400).send({message: err.errors[0].message, error: err});
+                }
+            }
         });
     } catch(err) {
-        res.status(400).send({msg: "failed", error: err});
+        res.status(400).send({message: "Something went wrong", error: err});
     }
 }

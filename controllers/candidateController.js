@@ -13,7 +13,7 @@ exports.index = async (req, res) => {
         });
         return res.json(candidates);
     } catch (err) {
-        return res.status(400).send({msg: "failed", error: err});
+        return res.status(400).send({message: "Something went wrong", error: err});
     }
 }
 
@@ -24,11 +24,11 @@ exports.show = async (req, res) => {
             where: {uuid: uuid}
         });
         if (count < 1) {
-            throw {msg: "Candidate not found"};
+            return res.status(404).send({message: "Candidate not found"});
         }
         return res.json(candidate);
     } catch (err) {
-        return res.status(400).send({msg: "failed", error: err});
+        return res.status(400).send({message: "Something went wrong!", error: err});
     }
 }
 
@@ -39,14 +39,14 @@ exports.delete = async (req, res) => {
             where: {uuid: uuid}
         });
         if (count < 1) {
-            throw {msg: "Candidate not found"};
+            return res.status(404).send({message: "Candidate not found", error: err});
         }
         await Candidate.destroy({
             where: {uuid: uuid}
         });
         return res.json({msg: "deleted"});
     } catch (err) {
-        return res.status(400).send({msg: "failed", error: err});
+        return res.status(400).send({message: "Something went wrong!", error: err});
     }
 }
 
@@ -57,14 +57,14 @@ exports.edit = async (req, res) => {
             where: {uuid: uuid}
         });
         if (count < 1) {
-            throw {msg: "Candidate not found"};
+            return res.status(404).send({message: "Candidate not found"});
         }
         await Candidate.update({firstname, lastname, email, password, cnic, dob, permanentAddress}, {
             where: {uuid: uuid}
         });
         return res.json({msg: "edited"});
     } catch (err) {
-        return res.status(400).send({msg: "failed", error: err});
+        return res.status(400).send({message: err.errors[0].message, error: err});
     }
 }
 
@@ -75,9 +75,8 @@ exports.create = async (req, res) => {
             where: {uuid: organizerId}
         });
         if (count < 1) {
-            throw {msg: "Invalid organizer"};
+            return res.status(400).send({message: "You cannot perform this operation", error: err});
         }
-        console.log(organizer[0].id);
         const OrganizerId = organizer[0].id;
         try {
             bcrypt.hash(password, saltRounds, async (err, password) => {
@@ -85,9 +84,14 @@ exports.create = async (req, res) => {
                 return res.json(candidate);
             });
         } catch(err) {
-            res.status(400).send({msg: "failed", error: err});
+            if (err instanceof Sequelize.UniqueConstraintError) {
+                return res.status(400).send({message: "Email already exists"});
+            }
+            else{
+                return res.status(400).send({message: err.errors[0].message, error: err});
+            }
         }
     } catch (err) {
-        return res.status(400).send({msg: "failed", error: err});
+        return res.status(400).send({message: "something went wrong", error: err});
     }
 }
