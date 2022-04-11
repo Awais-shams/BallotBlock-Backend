@@ -2,6 +2,8 @@
 const bcrypt = require('bcrypt');
 // salt rounds to encrypt passwords
 const saltRounds = 10;
+// Import sequelize
+const Sequelize = require('sequelize');
 
 // import models
 const {Candidate, Organizer} = require('../models');
@@ -78,19 +80,19 @@ exports.create = async (req, res) => {
             return res.status(400).send({message: "You cannot perform this operation", error: err});
         }
         const OrganizerId = organizer[0].id;
-        try {
-            bcrypt.hash(password, saltRounds, async (err, password) => {
+        bcrypt.hash(password, saltRounds, async (err, password) => {
+            try {
                 const candidate = await Candidate.create({firstname, lastname, email, password, cnic, dob, permanentAddress, OrganizerId});
                 return res.json(candidate);
-            });
-        } catch(err) {
-            if (err instanceof Sequelize.UniqueConstraintError) {
-                return res.status(400).send({message: "Email already exists"});
+            } catch(err) {
+                if (err instanceof Sequelize.UniqueConstraintError) {
+                    return res.status(400).send({message: "Email already exists"});
+                }
+                else{
+                    return res.status(400).send({message: err.errors[0].message, error: err});
+                }
             }
-            else{
-                return res.status(400).send({message: err.errors[0].message, error: err});
-            }
-        }
+        });
     } catch (err) {
         return res.status(400).send({message: "something went wrong", error: err});
     }

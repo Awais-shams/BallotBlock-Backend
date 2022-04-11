@@ -2,6 +2,8 @@
 const bcrypt = require('bcrypt');
 // salt rounds to encrypt passwords
 const saltRounds = 10;
+// Import sequelize
+const Sequelize = require('sequelize');
 
 // import models
 const {Voter} = require('../models');

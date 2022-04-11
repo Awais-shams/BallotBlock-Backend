@@ -13,6 +13,8 @@ const organizerController = require('../controllers/organizerController');
 const designationController = require('../controllers/designationController');
 const candidateController = require('../controllers/candidateController');
 const voterController = require('../controllers/voterController');
+const organizationController = require('../controllers/organizationController');
+const electionController = require('../controllers/electionController');
 const authController = require('../controllers/authController');
 
 // // routes - ADMIN
@@ -30,18 +32,32 @@ router.get('/organizer/:uuid', validateToken([Role.Admin, Role.Organizer]), orga
 router.delete('/organizer/:uuid', validateToken([Role.Admin]), organizerController.delete);
 
 // routes - DESIGNATION
-router.get('/designation/', validateToken([Role.Organizer]), designationController.index);
-router.post('/designation/create', validateToken([Role.Organizer]), designationController.create);
-router.patch('/designation/edit', validateToken([Role.Organizer]), designationController.edit);
-router.get('/designation/:uuid', validateToken([Role.Organizer]), designationController.show);
-router.delete('/designation/:uuid', validateToken([Role.Organizer]), designationController.delete);
+// router.get('/designation/', validateToken([Role.Organizer]), designationController.index);
+// router.post('/designation/create', validateToken([Role.Organizer]), designationController.create);
+// router.patch('/designation/edit', validateToken([Role.Organizer]), designationController.edit);
+// router.get('/designation/:uuid', validateToken([Role.Organizer]), designationController.show);
+// router.delete('/designation/:uuid', validateToken([Role.Organizer]), designationController.delete);
 
-// // routes - CANDIDATE
+// routes - ORGANIZATION
+router.get('/organization/', validateToken([Role.Organizer]), organizationController.index);
+router.post('/organization/create', validateToken([Role.Organizer]), organizationController.create);
+router.patch('/organization/edit', validateToken([Role.Organizer]), organizationController.edit);
+router.get('/organization/:uuid', validateToken([Role.Organizer]), organizationController.show);
+router.delete('/organization/:uuid', validateToken([Role.Organizer]), organizationController.delete);
+
+// routes - ELECTION
+router.get('/election/', validateToken([Role.Organizer, Role.Admin]), electionController.index);
+router.post('/election/create', validateToken([Role.Organizer]), electionController.create);
+router.patch('/election/edit', validateToken([Role.Organizer]), electionController.edit);
+router.get('/election/:uuid', validateToken([Role.Organizer]), electionController.show);
+router.delete('/election/:uuid', validateToken([Role.Organizer]), electionController.delete);
+
+// routes - CANDIDATE
 router.get('/candidate/', validateToken([Role.Organizer]), candidateController.index);
 router.post('/candidate/create', validateToken([Role.Organizer]), candidateController.create);
 router.patch('/candidate/edit', validateToken([Role.Organizer, Role.Candidate]), candidateController.edit);
 router.get('/candidate/:uuid', validateToken([Role.Organizer, Role.Candidate]), candidateController.show);
-router.delete('/candidate/:uuid', validateToken, candidateController.delete);
+router.delete('/candidate/:uuid', validateToken([Role.Organizer, Role.Candidate]), candidateController.delete);
 
 // routes - VOTER
 router.get('/voter/', validateToken([Role.Organizer]), voterController.index);
