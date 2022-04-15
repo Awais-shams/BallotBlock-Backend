@@ -2,7 +2,8 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    queryInterface.dropTable('designations');
+    // do nothing
+    // queryInterface.dropTable('designations');
     /**
      * Add altering commands here.
      *

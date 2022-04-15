@@ -15,6 +15,7 @@ const candidateController = require('../controllers/candidateController');
 const voterController = require('../controllers/voterController');
 const organizationController = require('../controllers/organizationController');
 const electionController = require('../controllers/electionController');
+const outletController = require('../controllers/outletController');
 const authController = require('../controllers/authController');
 
 // // routes - ADMIN
@@ -58,6 +59,11 @@ router.post('/candidate/create', validateToken([Role.Organizer]), candidateContr
 router.patch('/candidate/edit', validateToken([Role.Organizer, Role.Candidate]), candidateController.edit);
 router.get('/candidate/:uuid', validateToken([Role.Organizer, Role.Candidate]), candidateController.show);
 router.delete('/candidate/:uuid', validateToken([Role.Organizer, Role.Candidate]), candidateController.delete);
+
+// routes - OUTLET
+router.post('/outlet/create', validateToken([Role.Admin]), outletController.create);
+router.get('/outlet/', validateToken([Role.Admin]), outletController.index);
+router.delete('/outlet/:api_key', validateToken([Role.Admin]), outletController.delete);
 
 // routes - VOTER
 router.get('/voter/', validateToken([Role.Organizer]), voterController.index);
