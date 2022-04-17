@@ -12,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Organization)
+      this.hasMany(models.Candidate)
+      this.belongsToMany(models.Voter, { through: 'RegisteredVoter' });
     }
     toJSON() {
       return { ...this.get() }

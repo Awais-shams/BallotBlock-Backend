@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.Organizer);
+      this.belongsTo(models.Election);
     }
     toJSON() {
       return { ...this.get(), id: undefined, OrganizerId: undefined, password: undefined }
@@ -103,6 +103,10 @@ module.exports = (sequelize, DataTypes) => {
           }
         }
       }
+    },
+    publicAddress: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     dob: {
       type: DataTypes.STRING,

@@ -6,7 +6,7 @@ const saltRounds = 10;
 const Sequelize = require('sequelize');
 
 // import models
-const {Voter} = require('../models');
+const {Voter, Election, RegisteredVoter} = require('../models');
 
 exports.index = async (req, res) => {
     try {
@@ -47,6 +47,73 @@ exports.delete = async (req, res) => {
         return res.json({msg: "deleted"});
     } catch (err) {
         return res.status(400).send({message: "Something went wrong", error: err});
+    }
+}
+
+exports.verificationStatus = async (req, res) => {
+    const {givenId, voterId, electionId} = req.body
+    try {
+        const {electionCount, rows: election} = await Election.findAndCountAll({
+            where: {uuid: electionId}
+        });
+        if (election.length < 1) {
+            return res.status(400).send({message: "Invalid election"})
+        }
+        console.log(electionCount);
+        const ElectionId = election[0].id;
+        const {voterCount, rows: voter} = await Voter.findAndCountAll({
+            where: {uuid: voterId}
+        });
+        if (voter.length < 1) {
+            return res.status(400).send({message: "Invalid voter"})
+        }
+        const VoterId = voter[0].id;
+        const regsiteredVoter = await RegisteredVoter.findOne({
+            where: {
+                GivenId: givenId,
+                ElectionId: ElectionId,
+                VoterId: VoterId
+            }
+        });
+        if (regsiteredVoter) {
+            if (regsiteredVoter.registered) {
+                return res.json({status: "verified"})
+            } else {
+                return res.json({status: "not verified"})
+            }
+        } else {
+            return res.json({status: "no voter found"})
+        }
+    } catch(err) {
+        console.log(err)
+        return res.status(400).send({message: "something went wrong"})
+    }
+}
+
+exports.verify = async (req, res) => {
+    const {electionId, voterId, givenId} = req.body
+    try {
+        const {registeredVoterCount, rows: registeredVoter} = await RegisteredVoter.findAndCountAll({
+            where: {GivenId: givenId}
+        });
+        if (registeredVoter.length > 0) {
+            return res.status(400).send({message: "Voter already registered"});
+        }
+        const {electionCount, rows: election} = await Election.findAndCountAll({
+            where: {uuid: electionId}
+        });
+        console.log(electionCount);
+        const ElectionId = election[0].id;
+        const {voterCount, rows: voter} = await Voter.findAndCountAll({
+            where: {uuid: voterId}
+        });
+        const VoterId = voter[0].id;
+        const GivenId = givenId;
+        const registereVoter = await RegisteredVoter.create({ElectionId, VoterId, GivenId});
+        return res.json(registereVoter)
+    } catch(err) {
+        console.log(err);
+        return res.status(400).send({message: "something went wrong"});
     }
 }
 

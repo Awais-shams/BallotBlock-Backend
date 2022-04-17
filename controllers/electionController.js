@@ -17,7 +17,8 @@ exports.show = async (req, res) => {
     const uuid = req.params.uuid;
     try {
         const {count, rows: election} = await Election.findAndCountAll({
-            where: {uuid: uuid}
+            where: {uuid: uuid},
+            include: Organization
         });
         if (count < 1) {
             return res.status(404).send({message: "Election not found"});
@@ -43,7 +44,7 @@ exports.delete = async (req, res) => {
         return res.json({msg: "deleted"});
     } catch (err) {
         return res.status(400).send({message: "Something went wrong", error: err});
-    }
+    }   
 }
 
 exports.edit = async (req, res) => {
@@ -83,5 +84,25 @@ exports.create = async (req, res) => {
         }
     } catch (err) {
         return res.status(400).send({message: "Something went wrong", error: err});
+    }
+}
+
+exports.deployed = async (req, res) => {
+    const {uuid, contractAddress, deployTxHash} = req.body;
+    const status = "DEPLOYED";
+    try {
+        const {count} = await Election.findAndCountAll({
+            where: {uuid: uuid}
+        });
+        if (count < 1) {
+            return res.status(404).send({message: "Election not found"});
+        }
+        await Election.update({contractAddress, deployTxHash, status}, {
+            where: {uuid: uuid}
+        });
+        return res.json({msg: "edited"});
+    } catch (err) {
+        console.log(err);
+        return res.status(400).send({message: err.errors[0].message, error: err});
     }
 }

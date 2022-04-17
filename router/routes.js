@@ -50,11 +50,13 @@ router.delete('/organization/:uuid', validateToken([Role.Organizer]), organizati
 router.get('/election/', validateToken([Role.Organizer, Role.Admin]), electionController.index);
 router.post('/election/create', validateToken([Role.Organizer]), electionController.create);
 router.patch('/election/edit', validateToken([Role.Organizer]), electionController.edit);
+router.patch('/election/deployed', validateToken([Role.Organizer]), electionController.deployed);
 router.get('/election/:uuid', validateToken([Role.Organizer]), electionController.show);
 router.delete('/election/:uuid', validateToken([Role.Organizer]), electionController.delete);
 
 // routes - CANDIDATE
 router.get('/candidate/', validateToken([Role.Organizer]), candidateController.index);
+router.get('/candidate/filtered/:uuid', validateToken([Role.Organizer, Role.Voter]), candidateController.filteredCandidates);
 router.post('/candidate/create', validateToken([Role.Organizer]), candidateController.create);
 router.patch('/candidate/edit', validateToken([Role.Organizer, Role.Candidate]), candidateController.edit);
 router.get('/candidate/:uuid', validateToken([Role.Organizer, Role.Candidate]), candidateController.show);
@@ -68,6 +70,8 @@ router.delete('/outlet/:api_key', validateToken([Role.Admin]), outletController.
 // routes - VOTER
 router.get('/voter/', validateToken([Role.Organizer]), voterController.index);
 router.post('/voter/create', voterController.create);
+router.post('/voter/verify', voterController.verify);
+router.post('/voter/verificationStatus', voterController.verificationStatus);
 router.patch('/voter/edit', validateToken([Role.Voter]), voterController.edit);
 router.get('/voter/:uuid', validateToken([Role.Voter]), voterController.show);
 router.delete('/voter/:uuid', validateToken([Role.Voter]), voterController.delete);

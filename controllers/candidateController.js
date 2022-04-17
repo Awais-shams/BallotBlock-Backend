@@ -6,15 +6,30 @@ const saltRounds = 10;
 const Sequelize = require('sequelize');
 
 // import models
-const {Candidate, Organizer} = require('../models');
+const {Candidate, Organizer, Election} = require('../models');
 
 exports.index = async (req, res) => {
     try {
+        const candidates = await Candidate.findAll();
+        return res.json(candidates);
+    } catch (err) {
+        return res.status(400).send({message: "Something went wrong", error: err});
+    }
+}
+
+exports.filteredCandidates = async (req, res) => {
+    const uuid = req.params.uuid;
+    try {
+        const {electionCount, rows: election} = await Election.findAndCountAll({
+            where: {uuid: uuid}
+        });
+        const id = election[0].id;
         const candidates = await Candidate.findAll({
-            include: Organizer
+            where: {ElectionId: id}
         });
         return res.json(candidates);
     } catch (err) {
+        console.log(err);
         return res.status(400).send({message: "Something went wrong", error: err});
     }
 }
@@ -23,7 +38,8 @@ exports.show = async (req, res) => {
     const uuid = req.params.uuid;
     try {
         const {count, rows: candidate} = await Candidate.findAndCountAll({
-            where: {uuid: uuid}
+            where: {uuid: uuid},
+            include: Election
         });
         if (count < 1) {
             return res.status(404).send({message: "Candidate not found"});
@@ -71,29 +87,28 @@ exports.edit = async (req, res) => {
 }
 
 exports.create = async (req, res) => {
-    const {firstname, lastname, email, password, cnic, dob, permanentAddress, organizerId} = req.body;
+    const {firstname, lastname, email, password, cnic, publicAddress, electionId, dob, permanentAddress} = req.body;
     try {
-        const {count, rows: organizer} = await Organizer.findAndCountAll({
-            where: {uuid: organizerId}
+        const {electionCount, rows: election} = await Election.findAndCountAll({
+            where: {uuid: electionId}
         });
-        if (count < 1) {
-            return res.status(400).send({message: "You cannot perform this operation", error: err});
-        }
-        const OrganizerId = organizer[0].id;
+        const ElectionId = election[0].id;
         bcrypt.hash(password, saltRounds, async (err, password) => {
             try {
-                const candidate = await Candidate.create({firstname, lastname, email, password, cnic, dob, permanentAddress, OrganizerId});
+                const candidate = await Candidate.create({firstname, lastname, email, password, cnic, publicAddress, dob, permanentAddress, ElectionId});
                 return res.json(candidate);
             } catch(err) {
                 if (err instanceof Sequelize.UniqueConstraintError) {
                     return res.status(400).send({message: "Email already exists"});
                 }
                 else{
+                    console.log(err);
                     return res.status(400).send({message: err.errors[0].message, error: err});
                 }
             }
         });
     } catch (err) {
+        console.log(err);
         return res.status(400).send({message: "something went wrong", error: err});
     }
 }

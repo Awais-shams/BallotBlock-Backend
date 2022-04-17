@@ -12,8 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Admin);
-      this.hasMany(models.Candidate);
-      this.hasMany(models.Designation);
     }
     toJSON() {
       return { ...this.get(), id: undefined, AdminId: undefined, password: undefined }
