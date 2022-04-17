@@ -143,7 +143,8 @@ exports.voterAuth = async (req, res) => {
             );
             res.json({
                 message: "Signed in",
-                accessToken: accessToken
+                accessToken: accessToken,
+                uuid: voter.uuid
             });
         }
     });
