@@ -135,6 +135,11 @@ module.exports = (sequelize, DataTypes) => {
           msg: "Address can't be empty."
         }
       }
+    },
+    invited: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: '0'
     }
   }, {
     sequelize,

@@ -17,6 +17,52 @@ exports.index = async (req, res) => {
     }
 }
 
+exports.filtered = async (req, res) => {
+    const uuid = req.params.uuid;
+    console.log(uuid);
+    try {
+        const election = await Election.findOne({
+            where: {uuid: uuid}
+        })
+        if (!election) {
+            return res.status(400).send({message: "Invalid Election"}); 
+        }
+        const id = election.id;
+        console.log(id);
+        const voter = await RegisteredVoter.findAll({
+            where: {ElectionId: id, registered: false},
+            include: Voter
+        })
+        return res.json(voter);
+    } catch (err) {
+        console.log(err);
+        return res.status(400).send({message: "something went wrong", error: err});
+    }
+}
+
+exports.verified = async (req, res) => {
+    const uuid = req.params.uuid;
+    console.log(uuid);
+    try {
+        const election = await Election.findOne({
+            where: {uuid: uuid}
+        })
+        if (!election) {
+            return res.status(400).send({message: "Invalid Election"}); 
+        }
+        const id = election.id;
+        console.log(id);
+        const voter = await RegisteredVoter.findAll({
+            where: {ElectionId: id, registered: true},
+            include: Voter
+        })
+        return res.json(voter);
+    } catch (err) {
+        console.log(err);
+        return res.status(400).send({message: "something went wrong", error: err});
+    }
+}
+
 exports.show = async (req, res) => {
     const uuid = req.params.uuid;
     try {
@@ -91,7 +137,7 @@ exports.verificationStatus = async (req, res) => {
 }
 
 exports.verify = async (req, res) => {
-    const {electionId, voterId, givenId} = req.body
+    const {electionId, voterId, givenId, VoterAddress} = req.body
     try {
         const {registeredVoterCount, rows: registeredVoter} = await RegisteredVoter.findAndCountAll({
             where: {GivenId: givenId}
@@ -109,7 +155,7 @@ exports.verify = async (req, res) => {
         });
         const VoterId = voter[0].id;
         const GivenId = givenId;
-        const registereVoter = await RegisteredVoter.create({ElectionId, VoterId, GivenId});
+        const registereVoter = await RegisteredVoter.create({ElectionId, VoterId, GivenId, VoterAddress});
         return res.json(registereVoter)
     } catch(err) {
         console.log(err);

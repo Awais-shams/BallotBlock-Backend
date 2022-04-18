@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.Voter);
     }
   };
   RegisteredVoter.init({
@@ -27,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: '0'
+    },
+    VoterAddress: {
+      type: DataTypes.STRING,
+      allowNull: false
     }
   }, {
     sequelize,

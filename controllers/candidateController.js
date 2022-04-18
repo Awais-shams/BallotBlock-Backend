@@ -86,6 +86,30 @@ exports.edit = async (req, res) => {
     }
 }
 
+exports.setInvited = async (req, res) => {
+    const { uuid } = req.body;
+    try {
+        const candidate = await Candidate.findOne({
+            where: { uuid: uuid }
+        })
+        console.log(candidate);
+        if (candidate) {
+            const candi = await Candidate.update({
+                invited: true
+            }, {
+                where: {uuid: uuid}
+            })
+            
+            return res.json({
+                message: "Candidate has been added to the Election Smart Contract",
+            })
+        }
+        return res.status(400).send({message: "Invalid canidate"})
+    } catch(err) {
+        return res.status(400).send({message: "something went wrong"})
+    }
+}
+
 exports.create = async (req, res) => {
     const {firstname, lastname, email, password, cnic, publicAddress, electionId, dob, permanentAddress} = req.body;
     try {
