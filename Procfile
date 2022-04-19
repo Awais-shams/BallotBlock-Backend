@@ -1,0 +1,1 @@
+web: sequelize-cli db:migrate && node server.js

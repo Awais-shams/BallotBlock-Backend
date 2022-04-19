@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors')
-const dotenv = require('dotenv');
+const dotenv = require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const router = require('./router/routes');
 
@@ -8,9 +8,6 @@ const router = require('./router/routes');
 const currentTimestamp = require('./_helpers/currentDate.js');
 
 // setting up the enviroment variables
-dotenv.config({
-    path: './.env'
-});
 
 // creating an instance of the app
 const app = express();
@@ -42,5 +39,5 @@ app.use(cookieParser());
 app.use('/', router);
 
 app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server is running on http://${process.env.HOST}:${process.env.PORT} in ${process.env.ENVIROMENT} enviroment.`)
+    console.log(`Server is running on http://${process.env.HOST}:${process.env.PORT} in ${process.env.NODE_ENV} enviroment.`)
 });
