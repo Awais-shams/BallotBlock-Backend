@@ -119,3 +119,46 @@ exports.deployed = async (req, res) => {
         return res.status(400).send({message: err.errors[0].message, error: err});
     }
 }
+
+exports.start = async (req, res) => {
+    const {uuid} = req.body;
+    const status = "VOTING";
+    console.log("HERE check");
+    try {
+        const {count} = await Election.findAndCountAll({
+            where: {uuid: uuid}
+        });
+        if (count < 1) {
+            return res.status(404).send({message: "Election not found"});
+        }
+        const election = await Election.update({status}, {
+            where: {uuid: uuid}
+        });
+        console.log(election);
+        return res.json({msg: "edited"});
+    } catch (err) {
+        console.log(err);
+        return res.status(400).send({message: err.errors[0].message, error: err});
+    }
+}
+
+exports.end = async (req, res) => {
+    const {uuid} = req.body;
+    const status = "ENDED";
+    try {
+        const {count} = await Election.findAndCountAll({
+            where: {uuid: uuid}
+        });
+        if (count < 1) {
+            return res.status(404).send({message: "Election not found"});
+        }
+        const election = await Election.update({status}, {
+            where: {uuid: uuid}
+        });
+        console.log(election);
+        return res.json({msg: "edited"});
+    } catch (err) {
+        console.log(err);
+        return res.status(400).send({message: err.errors[0].message, error: err});
+    }
+}

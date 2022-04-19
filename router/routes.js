@@ -52,6 +52,8 @@ router.get('/election/filtered/:uuid', validateToken([Role.Organizer, Role.Admin
 router.post('/election/create', validateToken([Role.Organizer]), electionController.create);
 router.patch('/election/edit', validateToken([Role.Organizer]), electionController.edit);
 router.patch('/election/deployed', validateToken([Role.Organizer]), electionController.deployed);
+router.patch('/election/start', validateToken([Role.Organizer]), electionController.start);
+router.patch('/election/end', validateToken([Role.Organizer]), electionController.end);
 router.get('/election/:uuid', validateToken([Role.Organizer]), electionController.show);
 router.delete('/election/:uuid', validateToken([Role.Organizer]), electionController.delete);
 
