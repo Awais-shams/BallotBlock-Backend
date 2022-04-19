@@ -1,6 +1,6 @@
 
 // import models
-const {Election, Organization} = require('../models');
+const {Election, Organization, Candidate} = require('../models');
 
 exports.index = async (req, res) => {
     try {
@@ -8,6 +8,19 @@ exports.index = async (req, res) => {
             include: Organization
         });
         return res.json(elections);
+    } catch (err) {
+        return res.status(400).send({message: "Something went wrong", error: err});
+    }
+}
+
+exports.filtered = async (req, res) => {
+    const uuid = req.params.uuid;
+    try {
+        const election = await Candidate.findOne({
+            where: {uuid: uuid},
+            include: Election
+        });
+        return res.json([election]);
     } catch (err) {
         return res.status(400).send({message: "Something went wrong", error: err});
     }

@@ -48,6 +48,7 @@ router.delete('/organization/:uuid', validateToken([Role.Organizer]), organizati
 
 // routes - ELECTION
 router.get('/election/', validateToken([Role.Organizer, Role.Admin, Role.Voter]), electionController.index);
+router.get('/election/filtered/:uuid', validateToken([Role.Organizer, Role.Admin, Role.Voter, Role.Candidate]), electionController.filtered);
 router.post('/election/create', validateToken([Role.Organizer]), electionController.create);
 router.patch('/election/edit', validateToken([Role.Organizer]), electionController.edit);
 router.patch('/election/deployed', validateToken([Role.Organizer]), electionController.deployed);

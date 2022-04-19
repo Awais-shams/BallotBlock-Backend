@@ -38,7 +38,8 @@ exports.adminAuth = async (req, res) => {
             res.json({
                 message: "Signed in",
                 uuid: admin.uuid,
-                accessToken: accessToken
+                accessToken: accessToken,
+                uuid: admin.uuid
             });
         }
     });
@@ -73,7 +74,8 @@ exports.oganizerAuth = async (req, res) => {
             );
             res.json({
                 message: "Signed in",
-                accessToken: accessToken
+                accessToken: accessToken,
+                uuid: organizer.uuid
             });
         }
     });
@@ -108,7 +110,8 @@ exports.candidateAuth = async (req, res) => {
             );
             res.json({
                 message: "Signed in",
-                accessToken: accessToken
+                accessToken: accessToken,
+                uuid: candidate.uuid
             });
         }
     });
