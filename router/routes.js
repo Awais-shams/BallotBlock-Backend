@@ -76,9 +76,10 @@ router.get('/voter/', validateToken([Role.Organizer]), voterController.index);
 router.get('/voter/filtered/:uuid', validateToken([Role.Organizer]), voterController.filtered);
 router.get('/voter/verified/:uuid', validateToken([Role.Organizer]), voterController.verified);
 router.post('/voter/create', voterController.create);
-router.post('/voter/verify', validateToken([Role.Voter]), voterController.verify);
+router.post('/voter/verify', validateToken([Role.Voter, Role.Organizer]), voterController.verify);
 router.post('/voter/verificationStatus', validateToken([Role.Voter]), voterController.verificationStatus);
 router.patch('/voter/edit', validateToken([Role.Voter]), voterController.edit);
+router.get('/voter/updateVerification/:uuid', validateToken([Role.Organizer]), voterController.updateVerification);
 router.get('/voter/:uuid', validateToken([Role.Voter]), voterController.show);
 router.delete('/voter/:uuid', validateToken([Role.Voter]), voterController.delete);
 

@@ -31,7 +31,7 @@ exports.filtered = async (req, res) => {
         console.log(id);
         const voter = await RegisteredVoter.findAll({
             where: {ElectionId: id, registered: false},
-            include: Voter
+            include: [Voter, Election]
         })
         return res.json(voter);
     } catch (err) {
@@ -160,6 +160,25 @@ exports.verify = async (req, res) => {
     } catch(err) {
         console.log(err);
         return res.status(400).send({message: "something went wrong"});
+    }
+}
+
+exports.updateVerification = async (req, res) => {
+    const uuid = req.params.uuid;
+    const registered = true;
+    try {
+        const {count} = await RegisteredVoter.findAndCountAll({
+            where: {uuid: uuid}
+        });
+        if (count < 1) {
+            return res.status(404).send({message: "Voter not found"});
+        }
+        await RegisteredVoter.update({registered}, {
+            where: {uuid: uuid}
+        });
+        return res.json({msg: "edited"});
+    } catch (err) {
+        return res.status(400).send({message: err.errors[0].message, error: err});
     }
 }
 
