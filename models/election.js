@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.belongsTo(models.Organization)
       this.hasMany(models.Candidate)
+      this.hasMany(models.Vote)
       this.belongsToMany(models.Voter, { through: 'RegisteredVoter' });
     }
     toJSON() {
