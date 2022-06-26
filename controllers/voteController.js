@@ -11,7 +11,7 @@ exports.index = async (req, res) => {
     }
 }
 
-exports.create = async (res, res) => {
+exports.create = async (req, res) => {
     const {voterAddress, candidateAddress, txHash, electionId} = req.body;
     try {
         const vote = await Vote.create({voterAddress, candidateAddress, txHash, electionId});
