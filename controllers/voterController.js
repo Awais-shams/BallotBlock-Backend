@@ -97,7 +97,7 @@ exports.delete = async (req, res) => {
 }
 
 exports.verificationStatus = async (req, res) => {
-    const {givenId, voterId, electionId} = req.body
+    const {email, voterId, electionId} = req.body
     try {
         const {electionCount, rows: election} = await Election.findAndCountAll({
             where: {uuid: electionId}
@@ -116,7 +116,7 @@ exports.verificationStatus = async (req, res) => {
         const VoterId = voter[0].id;
         const regsiteredVoter = await RegisteredVoter.findOne({
             where: {
-                GivenId: givenId,
+                email: email,
                 ElectionId: ElectionId,
                 VoterId: VoterId
             }
@@ -125,7 +125,7 @@ exports.verificationStatus = async (req, res) => {
             if (regsiteredVoter.registered) {
                 return res.json({status: "verified"})
             } else {
-                return res.json({status: "not verified"})
+                return res.json({status: "unverified"})
             }
         } else {
             return res.json({status: "no voter found"})
@@ -137,10 +137,10 @@ exports.verificationStatus = async (req, res) => {
 }
 
 exports.verify = async (req, res) => {
-    const {electionId, voterId, givenId, VoterAddress} = req.body
+    const {electionId, voterId, email, VoterAddress} = req.body
     try {
         const {registeredVoterCount, rows: registeredVoter} = await RegisteredVoter.findAndCountAll({
-            where: {GivenId: givenId}
+            where: {email: email}
         });
         if (registeredVoter.length > 0) {
             return res.status(400).send({message: "Voter already registered"});
@@ -154,8 +154,7 @@ exports.verify = async (req, res) => {
             where: {uuid: voterId}
         });
         const VoterId = voter[0].id;
-        const GivenId = givenId;
-        const registereVoter = await RegisteredVoter.create({ElectionId, VoterId, GivenId, VoterAddress});
+        const registereVoter = await RegisteredVoter.create({ElectionId, VoterId, email, VoterAddress});
         return res.json(registereVoter)
     } catch(err) {
         console.log(err);

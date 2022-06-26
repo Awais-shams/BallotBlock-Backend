@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: DataTypes.UUIDV4,
     },
-    GivenId: {
+    email: {
       type: DataTypes.STRING,
       allowNull: true
     },

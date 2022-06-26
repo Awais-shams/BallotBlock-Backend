@@ -90,5 +90,7 @@ router.post('/auth/candidate', authController.candidateAuth);
 router.post('/auth/voter', authController.voterAuth);
 // logout route
 router.get('/auth/logout', authController.logout);
+// ping
+router.get('/ping', authController.ping)
 
 module.exports = router;

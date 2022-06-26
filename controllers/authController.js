@@ -158,3 +158,8 @@ exports.logout = async (req, res) => {
 
     res.status(200).json({msg: "Logged out"});
 }
+
+exports.ping = async (req, res) => {
+
+    res.status(200).json({msg: "Server is up"});
+}
