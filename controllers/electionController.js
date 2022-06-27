@@ -123,7 +123,6 @@ exports.deployed = async (req, res) => {
 exports.start = async (req, res) => {
     const {uuid} = req.body;
     const status = "VOTING";
-    console.log("HERE check");
     try {
         const {count} = await Election.findAndCountAll({
             where: {uuid: uuid}

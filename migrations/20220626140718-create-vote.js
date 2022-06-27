@@ -21,13 +21,14 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      electionId: {
+      ElectionId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'elections',
           key: 'id',
         },
+        field: 'ElectionId'
       },
       txHash: {
         type: Sequelize.STRING,

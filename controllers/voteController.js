@@ -1,6 +1,6 @@
 
 // import models
-const {Vote} = require('../models');
+const {Vote, Election} = require('../models');
 
 exports.index = async (req, res) => {
     try {
@@ -14,10 +14,20 @@ exports.index = async (req, res) => {
 exports.create = async (req, res) => {
     const {voterAddress, candidateAddress, txHash, electionId} = req.body;
     try {
-        const vote = await Vote.create({voterAddress, candidateAddress, txHash, electionId});
+        const {count, rows: elections} = await Election.findAndCountAll({
+            where: {uuid: electionId}
+        });
+        // console.log(elections[0].id);
+        if (count < 1) {
+            return res.status(404).send({message: "Invalid election."});
+        }
+        const ElectionId = elections[0].id;
+        console.log("Hello: ", electionId);
+        const vote = await Vote.create(
+            {voterAddress, candidateAddress, txHash, ElectionId});
         return res.json(vote);
     } catch(err) {
-        return res.status(400).send({message: err.errors[0].message, error: err});
+        return res.status(400).send({message: "Something went wrong", error: err});
     }
 }
 

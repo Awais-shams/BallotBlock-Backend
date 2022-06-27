@@ -11,7 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.Election);
+      this.belongsTo(models.Election, {
+        foreignKey: 'ElectionId'
+      });
     }
   };
   Vote.init({
@@ -52,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    electionId: DataTypes.INTEGER,
+    ElectionId: DataTypes.INTEGER,
     txHash: {
       type: DataTypes.STRING,
       allowNull: false,
