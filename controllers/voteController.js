@@ -45,3 +45,23 @@ exports.show = async (req, res) => {
         return res.status(400).send({message: "Something went wrong", error: err});
     }
 }
+
+exports.filteredVotes = async (req, res) => {
+    const uuid = req.params.uuid;
+    try {
+        const {count, rows: elections} = await Election.findAndCountAll({
+            where: {uuid: uuid}
+        });
+        // console.log(elections[0].id);
+        if (count < 1) {
+            return res.status(404).send({message: "Invalid election."});
+        }
+        const ElectionId = elections[0].id;
+        const votes = await Vote.findAll({
+            where: { ElectionId: ElectionId }
+        })
+        return res.json(votes);
+    } catch (err) {
+        return res.status(400).send({message: "Something went wrong", error: err});
+    }
+}

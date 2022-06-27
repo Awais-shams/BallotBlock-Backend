@@ -42,6 +42,21 @@ exports.show = async (req, res) => {
     }
 }
 
+exports.showEnded = async (req, res) => {
+    try {
+        const {count, rows: elections} = await Election.findAndCountAll({
+            where: {status: "ENDED"},
+            include: Organization
+        });
+        if (count < 1) {
+            return res.status(404).send({message: "Election not found"});
+        }
+        return res.json(elections);
+    } catch (err) {
+        return res.status(400).send({message: "Something went wrong", error: err});
+    }
+}
+
 exports.delete = async (req, res) => {
     const uuid = req.params.uuid;
     try {
