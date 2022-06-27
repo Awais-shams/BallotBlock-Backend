@@ -20,9 +20,12 @@ exports.index = async (req, res) => {
 exports.filteredCandidates = async (req, res) => {
     const uuid = req.params.uuid;
     try {
-        const {electionCount, rows: election} = await Election.findAndCountAll({
+        const {count, rows: election} = await Election.findAndCountAll({
             where: {uuid: uuid}
         });
+        if (count < 1) {
+            return res.status(404).send({message: "Invalid election."});
+        }
         const id = election[0].id;
         const candidates = await Candidate.findAll({
             where: {ElectionId: id}

@@ -41,14 +41,14 @@ router.delete('/organization/:uuid', validateToken([Role.Organizer]), organizati
 
 // routes - ELECTION
 router.get('/election/', validateToken([Role.Organizer, Role.Admin, Role.Voter]), electionController.index);
+router.get('/election/:uuid', validateToken([Role.Organizer, Role.Admin]), electionController.show);
 router.get('/election/filtered/:uuid', validateToken([Role.Organizer, Role.Admin, Role.Voter, Role.Candidate]), electionController.filtered);
-router.get('/election/ended', electionController.showEnded);
+router.get('/elections/ended', electionController.showEnded);
 router.post('/election/create', validateToken([Role.Organizer]), electionController.create);
 router.patch('/election/edit', validateToken([Role.Organizer]), electionController.edit);
 router.patch('/election/deployed', validateToken([Role.Organizer]), electionController.deployed);
 router.patch('/election/start', validateToken([Role.Organizer]), electionController.start);
 router.patch('/election/end', validateToken([Role.Organizer]), electionController.end);
-router.get('/election/:uuid', validateToken([Role.Organizer]), electionController.show);
 router.delete('/election/:uuid', validateToken([Role.Organizer]), electionController.delete);
 
 // routes - CANDIDATE

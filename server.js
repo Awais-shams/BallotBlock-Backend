@@ -3,6 +3,7 @@ const cors = require('cors')
 const dotenv = require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const router = require('./router/routes');
+const api = require('./router/api');
 
 // import helpers
 const currentTimestamp = require('./_helpers/currentDate.js');
@@ -37,6 +38,7 @@ app.use(cookieParser());
 
 // configure routers
 app.use('/', router);
+app.use('/api', api);
 
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server is running on http://${process.env.HOST}:${process.env.PORT} in ${process.env.NODE_ENV} enviroment.`)
