@@ -199,6 +199,24 @@ exports.edit = async (req, res) => {
     }
 }
 
+exports.addWallet = async (req, res) => {
+    const {uuid, walletAddress} = req.body;
+    try {
+        const {count} = await Voter.findAndCountAll({
+            where: {uuid: uuid}
+        });
+        if (count < 1) {
+            return res.status(404).send({message: "Voter not found"});
+        }
+        await Voter.update({walletAddress}, {
+            where: {uuid: uuid}
+        });
+        return res.json({msg: "wallet address added"});
+    } catch (err) {
+        return res.status(400).send({message: err.errors[0].message, error: err});
+    }
+}
+
 exports.create = (req, res) => {
     const {firstname, lastname, email, password, cnic, dob, permanentAddress} = req.body;
     try {

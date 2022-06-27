@@ -73,6 +73,7 @@ router.post('/voter/create', voterController.create);
 router.post('/voter/verify', validateToken([Role.Voter, Role.Organizer]), voterController.verify);
 router.post('/voter/verificationStatus', validateToken([Role.Voter]), voterController.verificationStatus);
 router.patch('/voter/edit', validateToken([Role.Voter]), voterController.edit);
+router.patch('/voter/addWallet', validateToken([Role.Voter, Role.Organizer]), voterController.addWallet);
 router.get('/voter/updateVerification/:uuid', validateToken([Role.Organizer]), voterController.updateVerification);
 router.get('/voter/:uuid', validateToken([Role.Voter]), voterController.show);
 router.delete('/voter/:uuid', validateToken([Role.Voter]), voterController.delete);

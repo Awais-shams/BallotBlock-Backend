@@ -72,6 +72,11 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    walletAddress: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null,
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
