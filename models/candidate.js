@@ -95,8 +95,8 @@ module.exports = (sequelize, DataTypes) => {
           msg: "CNIC can't be empty."
         },
         checkLength(value) {
-          if (value.length != 13) {
-            throw new Error("Invalid CNIC");
+          if (value.length < 13) {
+            throw new Error("CNIC must be of 13 digits. " + value.length + " provided!");
           }
         }
       }
