@@ -94,9 +94,6 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: {
           msg: "CNIC can't be empty."
         },
-        isNumeric: {
-          msg: "Invalid CNIC"
-        },
         checkLength(value) {
           if (value.length != 13) {
             throw new Error("Invalid CNIC");
